@@ -4,9 +4,13 @@ using UnityEngine;
 
 public class CarController : MonoBehaviour {
 
-    float speedForce = 100.0f;
-    float torque = 15.0f;
-    
+    float speedForce = 60.0f;
+    float torqueForce = 60.0f;
+    float driftFactorSticky = 0.9f;
+    float driftFactorSlippy = 1f;
+    float maxStickyVelocity = 2.5f;
+    float minSlippyVelocity = 1.5f;
+
     void Start ()
     {
 		
@@ -18,14 +22,21 @@ public class CarController : MonoBehaviour {
 
         float turn = Input.GetAxis("Horizontal");
 
+        float driftFactor = driftFactorSticky;
+
+        if(RightVelocity().magnitude > maxStickyVelocity)
+        {
+            driftFactor = driftFactorSlippy;
+        }
+
         if (Input.GetButton("Accelerate"))
         {
             rb.AddForce(transform.forward * speedForce);
         }
 
-        rb.AddTorque(transform.up * torque * turn);
+        rb.angularVelocity = transform.up * torqueForce * turn;
 
-
+        rb.velocity = ForwardVelocity() + RightVelocity() * driftFactorSlippy;
 	}
 
     Vector3 ForwardVelocity()
@@ -35,6 +46,6 @@ public class CarController : MonoBehaviour {
 
     Vector3 RightVelocity()
     {
-        return transform.forward * Vector3.Dot(GetComponent<Rigidbody>().velocity, transform.forward);
+        return transform.right * Vector3.Dot(GetComponent<Rigidbody>().velocity, transform.right);
     }
 }
