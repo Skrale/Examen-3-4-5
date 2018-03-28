@@ -24,7 +24,6 @@ public class CarController : MonoBehaviour {
     void Start ()
     {
         car = this.gameObject;
-        Debug.Log(car.transform.localScale);
         standardTransform = car.transform.localScale;
 	}
 
@@ -84,8 +83,12 @@ public class CarController : MonoBehaviour {
         return transform.right * Vector3.Dot(GetComponent<Rigidbody>().velocity, transform.right);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider tagler)
     {
-        hasCollided = true;
+        if(tagler.tag == "outOfBounds")
+        {
+            hasCollided = true;
+        }
     }
+
 }
