@@ -5,6 +5,7 @@ using UnityEngine;
 public class CarController : MonoBehaviour {
 
     float speedForce = 60.0f;
+    float brakeForce = 5.0f;
     float torqueForce = 60.0f;
     float driftFactorSticky = 0.9f;
     float driftFactorSlippy = 1f;
@@ -32,6 +33,11 @@ public class CarController : MonoBehaviour {
         if (Input.GetButton("Accelerate"))
         {
             rb.AddForce(transform.forward * speedForce);
+        }
+
+        if(Input.GetButton("Brakes"))
+        {
+            rb.AddForce(-brakeForce * rb.velocity);
         }
 
         rb.angularVelocity = transform.up * torqueForce * turn;
