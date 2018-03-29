@@ -6,8 +6,12 @@ public class CarController : MonoBehaviour {
 
     float shrinkSpeed = 1.0f;
     Vector3 targetScale = new Vector3(0.1f, 0.1f, 0.1f);
+    Vector3 targetScaleBig = new Vector3(1.5f, 1.5f, 1.5f);
     float destroyScale = 0.15f;
     bool hasCollided = false;
+    bool jumpNow = false;
+    bool shrinkNow = false;
+
     GameObject car;
     Vector3 standardTransform;
 
@@ -20,6 +24,11 @@ public class CarController : MonoBehaviour {
     float minSlippyVelocity = 1.5f;
 
     public GameObject[] outOfBounds;
+
+    protected void LateUpdate()
+    {
+        transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y, 0);
+    }
 
     void Start ()
     {
@@ -36,6 +45,27 @@ public class CarController : MonoBehaviour {
             if (car.transform.localScale.x < targetScale.x && car.transform.localScale.y < targetScale.y && car.transform.localScale.z < targetScale.z)
             {
                 hasCollided = false;
+            }
+        }
+
+        if (jumpNow)
+        {
+            car.transform.localScale += Vector3.one * Time.deltaTime * shrinkSpeed;
+
+            if (car.transform.localScale.x > targetScaleBig.x && car.transform.localScale.y > targetScaleBig.y && car.transform.localScale.z > targetScaleBig.z)
+            {
+                jumpNow = false;
+            }
+        }
+
+        if (shrinkNow)
+        {
+            car.transform.localScale -= Vector3.one * Time.deltaTime * shrinkSpeed;
+
+            if (car.transform.localScale.x <= standardTransform.x && car.transform.localScale.y <= standardTransform.y && car.transform.localScale.z <= standardTransform.z)
+            {
+                car.transform.localScale = standardTransform;
+                shrinkNow = false;
             }
         }
 
@@ -83,11 +113,24 @@ public class CarController : MonoBehaviour {
         return transform.right * Vector3.Dot(GetComponent<Rigidbody>().velocity, transform.right);
     }
 
-    private void OnTriggerEnter(Collider tagler)
+    void OnTriggerEnter(Collider tagler)
     {
         if(tagler.tag == "outOfBounds")
         {
             hasCollided = true;
+        }
+
+        if(tagler.tag == "jumpPart")
+        {
+            jumpNow = true;
+        }
+    }
+
+    void OnTriggerExit(Collider taggert)
+    {
+        if(taggert.tag == "jumpPart")
+        {
+            shrinkNow = true;
         }
     }
 
