@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class CarController : MonoBehaviour {
 
+    public AudioClip[] drifting;
+    private AudioSource sjorsAudio;
+    public AudioClip shootClip;
+    public GameObject driftSound;
+
     float shrinkSpeed = 1.0f;
     Vector3 targetScale = new Vector3(0.1f, 0.1f, 0.1f);
     Vector3 targetScaleBig = new Vector3(1.5f, 1.5f, 1.5f);
@@ -11,6 +16,9 @@ public class CarController : MonoBehaviour {
     bool hasCollided = false;
     bool jumpNow = false;
     bool shrinkNow = false;
+
+    public ParticleSystem tireSmoke1;
+    public ParticleSystem tireSmoke2;
 
     GameObject car;
     Vector3 standardTransform;
@@ -21,9 +29,11 @@ public class CarController : MonoBehaviour {
     float driftFactorSticky = 0.9f;
     float driftFactorSlippy = 1f;
     float maxStickyVelocity = 2.5f;
-    float minSlippyVelocity = 1.5f;
+    public float stopParticle = 1.5f;
 
     public GameObject[] outOfBounds;
+
+    bool isDrifting = false;
 
     protected void LateUpdate()
     {
@@ -32,6 +42,7 @@ public class CarController : MonoBehaviour {
 
     void Start ()
     {
+        sjorsAudio = driftSound.GetComponent<AudioSource>();
         car = this.gameObject;
         standardTransform = car.transform.localScale;
 	}
@@ -86,6 +97,26 @@ public class CarController : MonoBehaviour {
         if(RightVelocity().magnitude > maxStickyVelocity)
         {
             driftFactor = driftFactorSlippy;
+        }
+
+        if (RightVelocity().magnitude > stopParticle)
+        {
+            tireSmoke1.Play();
+            tireSmoke2.Play();
+            if (!isDrifting)
+            {
+                sjorsAudio.PlayOneShot(shootClip);
+                isDrifting = true;
+            }
+        }
+
+        if (RightVelocity().magnitude < stopParticle)
+        {
+            tireSmoke1.Stop();
+            tireSmoke2.Stop();
+
+            sjorsAudio.Stop();
+            isDrifting = false;
         }
 
         if (Input.GetButton("Accelerate"))
