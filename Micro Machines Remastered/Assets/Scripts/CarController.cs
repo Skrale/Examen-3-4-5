@@ -96,11 +96,6 @@ public class CarController : MonoBehaviour {
             StartCoroutine(Zeit());
             respawn = false;
         }
-
-        if (Input.GetKey(KeyCode.Space))
-        {
-            car.transform.localScale = standardTransform;
-        }
     }
 
     void FixedUpdate ()
@@ -142,6 +137,11 @@ public class CarController : MonoBehaviour {
         if(Input.GetButton("Brakes"))
         {
             rb.AddForce(-brakeForce * rb.velocity);
+        }
+
+        if (Input.GetButton("Reverse"))
+        {
+            rb.AddForce(-transform.forward * speedForce);
         }
 
         rb.angularVelocity = transform.up * torqueForce * turn;
