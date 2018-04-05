@@ -7,6 +7,7 @@ TagManager:
   - outOfBounds
   - jumpPart
   - Checkpoint
+  - Obstacle
   layers:
   - Default
   - TransparentFX

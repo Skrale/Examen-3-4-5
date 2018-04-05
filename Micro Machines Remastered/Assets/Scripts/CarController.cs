@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CarController : MonoBehaviour {
 
+    float force = 1000;
+
     Rigidbody rb;
     public AudioClip[] drifting;
     private AudioSource sjorsAudio;
@@ -57,7 +59,9 @@ public class CarController : MonoBehaviour {
     {
         if (hasCollided)
         {
+            rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             car.transform.localScale -= Vector3.one * Time.deltaTime * shrinkSpeed;
+
 
             if (car.transform.localScale.x < targetScale.x && car.transform.localScale.y < targetScale.y && car.transform.localScale.z < targetScale.z)
             {
@@ -183,6 +187,16 @@ public class CarController : MonoBehaviour {
         if(taggert.tag == "jumpPart")
         {
             shrinkNow = true;
+        }
+    }
+
+    private void OnCollisionEnter(Collision colbo)
+    {
+        if(colbo.gameObject.tag == "Obstacle")
+        {
+            Vector3 dir = colbo.contacts[0].point - transform.position;
+            dir = -dir.normalized;
+            rb.AddForce(dir * force);
         }
     }
 
