@@ -4,6 +4,18 @@ using UnityEngine;
 
 public class CarController : MonoBehaviour {
 
+    [SerializeField]
+    string horizontalAxis;
+
+    [SerializeField]
+    string accelerationAxis;
+
+    [SerializeField]
+    string brakeAxis;
+
+    [SerializeField]
+    string reverseAxis;
+
     float force = 1000;
 
     Rigidbody rb;
@@ -101,7 +113,7 @@ public class CarController : MonoBehaviour {
 
     void FixedUpdate ()
     {
-        float turn = Input.GetAxis("Horizontal");
+        float turn = Input.GetAxis(horizontalAxis);
 
         float driftFactor = driftFactorSticky;
 
@@ -130,17 +142,17 @@ public class CarController : MonoBehaviour {
             isDrifting = false;
         }
 
-        if (Input.GetButton("Accelerate"))
+        if (Input.GetButton(accelerationAxis))
         {
             rb.AddForce(transform.forward * speedForce);
         }
 
-        if(Input.GetButton("Brakes"))
+        if(Input.GetButton(brakeAxis))
         {
             rb.AddForce(-brakeForce * rb.velocity);
         }
 
-        if (Input.GetButton("Reverse"))
+        if (Input.GetButton(reverseAxis))
         {
             rb.AddForce(-transform.forward * speedForce);
         }
