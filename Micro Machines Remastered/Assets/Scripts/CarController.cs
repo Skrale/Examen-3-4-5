@@ -49,7 +49,7 @@ public class CarController : MonoBehaviour {
     float driftFactorSlippy = 1f;
     float maxStickyVelocity = 2.5f;
     public float stopParticle = 1.5f;
-    float launchForce = 500;
+    float launchForce = 700;
 
     public GameObject[] outOfBounds;
 
@@ -81,12 +81,6 @@ public class CarController : MonoBehaviour {
                 respawn = true;
                 hasCollided = false;
             }
-        }
-
-        if (jumpNow)
-        {
-            rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-            rb.AddForce(transform.up * launchForce, ForceMode.Impulse);
         }
 
         if (shrinkNow)
@@ -155,6 +149,12 @@ public class CarController : MonoBehaviour {
         if (Input.GetButton(reverseAxis))
         {
             rb.AddForce(-transform.forward * speedForce);
+        }
+
+        if (jumpNow)
+        {
+            rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            rb.AddForce(transform.up * launchForce, ForceMode.Impulse);
         }
 
         rb.angularVelocity = transform.up * torqueForce * turn;
