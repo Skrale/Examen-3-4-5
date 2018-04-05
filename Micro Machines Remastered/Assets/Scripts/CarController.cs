@@ -37,6 +37,7 @@ public class CarController : MonoBehaviour {
     float driftFactorSlippy = 1f;
     float maxStickyVelocity = 2.5f;
     public float stopParticle = 1.5f;
+    float launchForce = 500;
 
     public GameObject[] outOfBounds;
 
@@ -72,12 +73,8 @@ public class CarController : MonoBehaviour {
 
         if (jumpNow)
         {
-            car.transform.localScale += Vector3.one * Time.deltaTime * shrinkSpeed;
-
-            if (car.transform.localScale.x > targetScaleBig.x && car.transform.localScale.y > targetScaleBig.y && car.transform.localScale.z > targetScaleBig.z)
-            {
-                jumpNow = false;
-            }
+            rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            rb.AddForce(transform.up * launchForce, ForceMode.Impulse);
         }
 
         if (shrinkNow)
@@ -180,13 +177,19 @@ public class CarController : MonoBehaviour {
             initialPos = tagler.transform.position;
             initialRot = tagler.transform.eulerAngles;
         }
+
+        if(tagler.tag == "landPart")
+        {
+            rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            transform.position = new Vector3(transform.position.x, 0.02f, transform.position.z);
+        }
     }
 
     void OnTriggerExit(Collider taggert)
     {
         if(taggert.tag == "jumpPart")
         {
-            shrinkNow = true;
+            jumpNow = false;
         }
     }
 
