@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CarController : MonoBehaviour {
 
+    Rigidbody rb;
     public AudioClip[] drifting;
     private AudioSource sjorsAudio;
     public AudioClip shootClip;
@@ -16,6 +17,10 @@ public class CarController : MonoBehaviour {
     bool hasCollided = false;
     bool jumpNow = false;
     bool shrinkNow = false;
+
+    Vector3 initialPos;
+    Vector3 initialRot;
+    bool respawn = false;
 
     public ParticleSystem tireSmoke1;
     public ParticleSystem tireSmoke2;
@@ -42,6 +47,7 @@ public class CarController : MonoBehaviour {
 
     void Start ()
     {
+        rb = GetComponent<Rigidbody>();
         sjorsAudio = driftSound.GetComponent<AudioSource>();
         car = this.gameObject;
         standardTransform = car.transform.localScale;
@@ -55,6 +61,7 @@ public class CarController : MonoBehaviour {
 
             if (car.transform.localScale.x < targetScale.x && car.transform.localScale.y < targetScale.y && car.transform.localScale.z < targetScale.z)
             {
+                respawn = true;
                 hasCollided = false;
             }
         }
@@ -80,6 +87,16 @@ public class CarController : MonoBehaviour {
             }
         }
 
+        if (respawn)
+        {
+            car.transform.localScale = standardTransform;
+            transform.eulerAngles = initialRot;
+            transform.position = initialPos;
+            rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            StartCoroutine(Zeit());
+            respawn = false;
+        }
+
         if (Input.GetKey(KeyCode.Space))
         {
             car.transform.localScale = standardTransform;
@@ -88,8 +105,6 @@ public class CarController : MonoBehaviour {
 
     void FixedUpdate ()
     {
-        Rigidbody rb = GetComponent<Rigidbody>();
-
         float turn = Input.GetAxis("Horizontal");
 
         float driftFactor = driftFactorSticky;
@@ -155,6 +170,12 @@ public class CarController : MonoBehaviour {
         {
             jumpNow = true;
         }
+
+        if(tagler.tag == "Checkpoint")
+        {
+            initialPos = tagler.transform.position;
+            initialRot = tagler.transform.eulerAngles;
+        }
     }
 
     void OnTriggerExit(Collider taggert)
@@ -163,6 +184,13 @@ public class CarController : MonoBehaviour {
         {
             shrinkNow = true;
         }
+    }
+
+    IEnumerator Zeit()
+    {
+        yield return new WaitForSeconds(1);
+        rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        StopCoroutine(Zeit());
     }
 
 }
