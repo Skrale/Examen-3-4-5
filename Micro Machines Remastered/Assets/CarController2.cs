@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CarController : MonoBehaviour {
+public class CarController2 : MonoBehaviour
+{
 
     [SerializeField]
     string horizontalAxis;
@@ -63,13 +64,13 @@ public class CarController : MonoBehaviour {
         transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y, 0);
     }
 
-    void Start ()
+    void Start()
     {
         rb = GetComponent<Rigidbody>();
         sjorsAudio = driftSound.GetComponent<AudioSource>();
         car = this.gameObject;
         standardTransform = car.transform.localScale;
-	}
+    }
 
     void Update()
     {
@@ -108,13 +109,13 @@ public class CarController : MonoBehaviour {
         }
     }
 
-    void FixedUpdate ()
+    void FixedUpdate()
     {
         float turn = Input.GetAxis(horizontalAxis);
 
         float driftFactor = driftFactorSticky;
 
-        if(RightVelocity().magnitude > maxStickyVelocity)
+        if (RightVelocity().magnitude > maxStickyVelocity)
         {
             driftFactor = driftFactorSlippy;
         }
@@ -144,7 +145,7 @@ public class CarController : MonoBehaviour {
             rb.AddForce(transform.forward * speedForce);
         }
 
-        if(Input.GetButton(brakeAxis))
+        if (Input.GetButton(brakeAxis))
         {
             rb.AddForce(-brakeForce * rb.velocity);
         }
@@ -163,7 +164,7 @@ public class CarController : MonoBehaviour {
         rb.angularVelocity = transform.up * torqueForce * turn;
 
         rb.velocity = ForwardVelocity() + RightVelocity() * driftFactorSlippy;
-	}
+    }
 
     Vector3 ForwardVelocity()
     {
@@ -177,31 +178,26 @@ public class CarController : MonoBehaviour {
 
     void OnTriggerEnter(Collider tagler)
     {
-        if(tagler.tag == "outOfBounds")
+        if (tagler.tag == "outOfBounds")
         {
             hasCollided = true;
         }
 
-        if(tagler.tag == "jumpPart")
+        if (tagler.tag == "jumpPart")
         {
             jumpNow = true;
         }
 
-        if(tagler.tag == "Checkpoint")
+        if (tagler.tag == "Checkpoint")
         {
             initialPos = tagler.transform.position;
             initialRot = tagler.transform.eulerAngles;
         }
 
-        if(tagler.tag == "landPart")
+        if (tagler.tag == "landPart")
         {
             rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             transform.position = new Vector3(transform.position.x, 0.02f, transform.position.z);
-        }
-
-        if (tagler.GetComponent<LastCheckpoint>())
-        {
-            canFinishBool.canFinish = true;
         }
 
         if (tagler.GetComponent<LastCheckpoint2>())
@@ -209,15 +205,9 @@ public class CarController : MonoBehaviour {
             canFinishBool.canFinish2 = true;
         }
 
-        if (tagler.GetComponent<FinishLine>())
+        if (tagler.GetComponent<FinishLine2>())
         {
-            if(canFinishBool.canFinish == true)
-            {
-                lapInt.lapCount++;
-                canFinishBool.canFinish = false;
-            }
-
-            if(canFinishBool.canFinish2 == true)
+            if (canFinishBool.canFinish2 == true)
             {
                 lapInt.lapCount2++;
                 canFinishBool.canFinish2 = false;
@@ -227,7 +217,7 @@ public class CarController : MonoBehaviour {
 
     void OnTriggerExit(Collider taggert)
     {
-        if(taggert.tag == "jumpPart")
+        if (taggert.tag == "jumpPart")
         {
             jumpNow = false;
         }
@@ -235,7 +225,7 @@ public class CarController : MonoBehaviour {
 
     private void OnCollisionEnter(Collision colbo)
     {
-        if(colbo.gameObject.tag == "Obstacle")
+        if (colbo.gameObject.tag == "Obstacle")
         {
             Vector3 dir = colbo.contacts[0].point - transform.position;
             dir = -dir.normalized;
