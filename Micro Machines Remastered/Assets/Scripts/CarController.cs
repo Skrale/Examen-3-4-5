@@ -55,6 +55,9 @@ public class CarController : MonoBehaviour {
 
     bool isDrifting = false;
 
+    public RaceManager canFinishBool;
+    public RaceManager lapInt;
+
     protected void LateUpdate()
     {
         transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y, 0);
@@ -194,6 +197,20 @@ public class CarController : MonoBehaviour {
         {
             rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             transform.position = new Vector3(transform.position.x, 0.02f, transform.position.z);
+        }
+
+        if (tagler.GetComponent<LastCheckpoint>())
+        {
+            canFinishBool.canFinish = true;
+        }
+
+        if (tagler.GetComponent<FinishLine>())
+        {
+            if(canFinishBool.canFinish == true)
+            {
+                lapInt.lapCount++;
+                canFinishBool.canFinish = false;
+            }
         }
     }
 

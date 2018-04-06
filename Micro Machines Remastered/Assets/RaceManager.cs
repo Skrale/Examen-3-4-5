@@ -9,28 +9,39 @@ public class RaceManager : MonoBehaviour {
     public Text raceTime2;
     public Text lapCounter1;
     public Text lapCounter2;
+    bool hasFinished1 = false;
 
-    int lapCount;
+    public int lapCount;
     float secondsCount;
     int minuteCount;
 
-    bool canFinish = false;
+    public bool canFinish = false;
     
 
 	void Start ()
     {
-        lapCounter1.text = "Lap: " + lapCount + "/3";
+        lapCount++;
 	}
 	
 
 	void Update ()
     {
-        secondsCount += Time.deltaTime;
-        raceTime1.text = minuteCount + "m - " +(int)secondsCount + "s ";
-        if(secondsCount >= 60)
+        if (!hasFinished1)
         {
-            minuteCount++;
-            secondsCount = 0;
+            secondsCount += Time.deltaTime;
+            raceTime1.text = minuteCount + "m - " + (int)secondsCount + "s ";
+            if (secondsCount >= 60)
+            {
+                minuteCount++;
+                secondsCount = 0;
+            }
+        }
+
+        lapCounter1.text = "Lap: " + lapCount + "/3";
+
+        if (lapCount >= 4)
+        {
+            hasFinished1 = true;
         }
 	}
 }
