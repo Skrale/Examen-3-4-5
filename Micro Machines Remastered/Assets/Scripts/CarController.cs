@@ -204,6 +204,12 @@ public class CarController : MonoBehaviour {
             transform.position = new Vector3(transform.position.x, 0.02f, transform.position.z);
         }
 
+        if (tagler.gameObject.GetComponent<GoSlowLmao>())
+        {
+            gameObject.GetComponent<Rigidbody>().mass = 1000;
+            rb.AddForce(-10000 * rb.velocity);
+        }
+
         if (tagler.GetComponent<LastCheckpoint>())
         {
             canFinishBool.canFinish = true;
@@ -235,6 +241,11 @@ public class CarController : MonoBehaviour {
         if(taggert.tag == "jumpPart")
         {
             jumpNow = false;
+        }
+
+        if (taggert.gameObject.GetComponent<GoSlowLmao>())
+        {
+            gameObject.GetComponent<Rigidbody>().mass = 1;
         }
     }
 
