@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class RaceManager : MonoBehaviour {
 
@@ -9,6 +10,8 @@ public class RaceManager : MonoBehaviour {
     public Text raceTime2;
     public Text lapCounter1;
     public Text lapCounter2;
+    public Text pos1;
+    public Text pos2;
     bool hasFinished1 = false;
     bool hasFinished2 = false;
 
@@ -19,6 +22,8 @@ public class RaceManager : MonoBehaviour {
 
     public bool canFinish = false;
     public bool canFinish2 = false;
+    public CarController counter1;
+    public CarController2 counter2;
     
 
 	void Start ()
@@ -26,10 +31,25 @@ public class RaceManager : MonoBehaviour {
         lapCount++;
         lapCount2++;
 	}
-	
 
-	void Update ()
+
+    void Update()
     {
+        if (counter1.checkpointCounter > counter2.checkpointCounter2)
+        {
+            pos1.text = "1st";
+            pos2.text = "2nd";
+        }else
+        {
+                pos1.text = "2nd";
+                pos2.text = "1st";
+        }
+
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            SceneManager.LoadScene(0);
+        }
+
         if (!hasFinished1)
         {
             secondsCount += Time.deltaTime;
@@ -64,6 +84,20 @@ public class RaceManager : MonoBehaviour {
         if(lapCount2 >= 4)
         {
             hasFinished2 = true;
+        }
+
+        if (hasFinished1 && counter1.checkpointCounter > counter2.checkpointCounter2)
+        {
+            counter1.checkpointCounter = 1000;
+            lapCounter1.text = "Lap: 3/3";
+            pos1.text = "WINNER";
+        }
+
+        if(hasFinished2 && counter2.checkpointCounter2 > counter1.checkpointCounter)
+        {
+            counter2.checkpointCounter2 = 1000;
+            lapCounter2.text = "Lap: 3/3";
+            pos2.text = "WINNER";
         }
 	}
 }

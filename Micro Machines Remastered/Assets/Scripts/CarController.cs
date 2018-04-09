@@ -58,6 +58,8 @@ public class CarController : MonoBehaviour {
     public RaceManager canFinishBool;
     public RaceManager lapInt;
 
+    public int checkpointCounter = 0;
+
     protected void LateUpdate()
     {
         transform.localEulerAngles = new Vector3(0, transform.localEulerAngles.y, 0);
@@ -73,6 +75,8 @@ public class CarController : MonoBehaviour {
 
     void Update()
     {
+
+        Debug.Log(checkpointCounter);
         if (hasCollided)
         {
             rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
@@ -191,6 +195,7 @@ public class CarController : MonoBehaviour {
         {
             initialPos = tagler.transform.position;
             initialRot = tagler.transform.eulerAngles;
+            checkpointCounter++;
         }
 
         if(tagler.tag == "landPart")
@@ -204,10 +209,10 @@ public class CarController : MonoBehaviour {
             canFinishBool.canFinish = true;
         }
 
-        if (tagler.GetComponent<LastCheckpoint2>())
+        /*if (tagler.GetComponent<LastCheckpoint2>())
         {
             canFinishBool.canFinish2 = true;
-        }
+        }*/
 
         if (tagler.GetComponent<FinishLine>())
         {
@@ -217,11 +222,11 @@ public class CarController : MonoBehaviour {
                 canFinishBool.canFinish = false;
             }
 
-            if(canFinishBool.canFinish2 == true)
+            /*if(canFinishBool.canFinish2 == true)
             {
                 lapInt.lapCount2++;
                 canFinishBool.canFinish2 = false;
-            }
+            }*/
         }
     }
 
