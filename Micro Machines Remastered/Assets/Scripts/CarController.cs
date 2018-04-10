@@ -16,6 +16,9 @@ public class CarController : MonoBehaviour {
     [SerializeField]
     string reverseAxis;
 
+    [SerializeField]
+    string resetAxis;
+
     float force = 1000;
 
     Rigidbody rb;
@@ -26,8 +29,6 @@ public class CarController : MonoBehaviour {
 
     float shrinkSpeed = 1.0f;
     Vector3 targetScale = new Vector3(0.1f, 0.1f, 0.1f);
-    Vector3 targetScaleBig = new Vector3(1.5f, 1.5f, 1.5f);
-    float destroyScale = 0.15f;
     bool hasCollided = false;
     bool jumpNow = false;
     bool shrinkNow = false;
@@ -75,8 +76,6 @@ public class CarController : MonoBehaviour {
 
     void Update()
     {
-
-        Debug.Log(checkpointCounter);
         if (hasCollided)
         {
             rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
@@ -103,13 +102,18 @@ public class CarController : MonoBehaviour {
 
         if (respawn)
         {
-            car.transform.localScale = standardTransform;
-            transform.eulerAngles = initialRot;
-            transform.position = initialPos;
-            rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-            StartCoroutine(Zeit());
-            respawn = false;
+            Respawn();
         }
+    }
+
+    void Respawn()
+    {
+        car.transform.localScale = standardTransform;
+        transform.eulerAngles = initialRot;
+        transform.position = initialPos;
+        rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        StartCoroutine(Zeit());
+        respawn = false;
     }
 
     void FixedUpdate ()
@@ -156,6 +160,11 @@ public class CarController : MonoBehaviour {
         if (Input.GetButton(reverseAxis))
         {
             rb.AddForce(-transform.forward * speedForce);
+        }
+
+        if (Input.GetButton(resetAxis))
+        {
+            respawn = true;
         }
 
         if (jumpNow)

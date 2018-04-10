@@ -24,10 +24,12 @@ public class RaceManager : MonoBehaviour {
     public bool canFinish2 = false;
     public CarController counter1;
     public CarController2 counter2;
+    public GameObject goBack;
     
 
 	void Start ()
     {
+        goBack.SetActive(false);
         lapCount++;
         lapCount2++;
 	}
@@ -71,6 +73,12 @@ public class RaceManager : MonoBehaviour {
                 secondsCount = 0;
             }
         }
+        
+            if (hasFinished1 && hasFinished2)
+            {
+                goBack.SetActive(true);
+                Time.timeScale = 0;
+            }
 
         lapCounter2.text = "Lap: " + lapCount2 + "/3";
 
